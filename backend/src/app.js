@@ -2,6 +2,9 @@ const express = require("express");
 const cors = require("cors");
 const pool = require("./config/db");
 const authRoutes = require("./auth/auth.routes");
+const adminRoutes = require("./admin/admin.routes");
+const storeRoutes = require("./store/store.routes");
+const ownerRoutes = require("./owner/owner.routes");
 
 const app = express();
 
@@ -9,6 +12,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use("/api/auth", authRoutes);
+app.use("/api/admin", adminRoutes);
+app.use("/api/stores", storeRoutes);
+app.use("/api/owner", ownerRoutes);
 
 // Health check
 app.get("/api/health", (req, res) => {
@@ -38,3 +44,5 @@ app.get("/api/health/db", async (req, res) => {
 });
 
 module.exports = app;
+
+
