@@ -1,9 +1,27 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import api from "../services/api";
+import {
+  SearchIcon,
+  PinIcon,
+  StarIcon,
+  StoreIcon,
+  CloseIcon,
+  SpinnerIcon,
+  CheckCircleIcon,
+  AlertCircleIcon,
+  RefreshIcon,
+} from "../components/Icons";
+
+const RATING_DESCRIPTIONS = {
+  1: "1 · Poor",
+  2: "2 · Fair",
+  3: "3 · Average",
+  4: "4 · Very Good",
+  5: "5 · Excellent",
+};
 
 function Stores() {
   const [stores, setStores] = useState([]);
-
   const [filters, setFilters] = useState({
     name: "",
     address: "",
@@ -11,282 +29,566 @@ function Stores() {
 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [ratingValues, setRatingValues] = useState({});
+  const [hoveredRatings, setHoveredRatings] = useState({});
+  const [submittingStoreId, setSubmittingStoreId] = useState(null);
+  const [storeFeedback, setStoreFeedback] = useState({});
 
-  const handleFilterChange = (event) => {
-    setFilters({
-      ...filters,
-      [event.target.name]: event.target.value,
-    });
-  };
+  const hasActiveFilters = Boolean(filters.name.trim() || filters.address.trim());
 
-  const fetchStores = async () => {
+  const fetchStores = useCallback(async (isRefresh = false) => {
+    if (isRefresh) {
+      setRefreshing(true);
+    }
+
     try {
-      setLoading(true);
       setError("");
 
       const response = await api.get("/stores", {
         params: {
-          name: filters.name,
-          address: filters.address,
+          name: filters.name.trim() || undefined,
+          address: filters.address.trim() || undefined,
         },
       });
 
-      const storeData = response.data.data;
-
+      const storeData = response.data?.data || [];
       setStores(storeData);
 
-      // Keep the existing rating selected in the dropdown.
-      const existingRatings = {};
-
-      storeData.forEach((store) => {
-        if (
-          store.user_rating !== null &&
-          store.user_rating !== undefined
-        ) {
-          existingRatings[store.id] = String(store.user_rating);
-        }
+      // Preserve existing ratings in local state
+      setRatingValues((previousValues) => {
+        const updated = { ...previousValues };
+        storeData.forEach((store) => {
+          if (store.user_rating !== null && store.user_rating !== undefined) {
+            updated[store.id] = Number(store.user_rating);
+          }
+        });
+        return updated;
       });
-
-      setRatingValues(existingRatings);
-    } catch (error) {
-      console.error("Unable to load stores:", error);
-
+    } catch (err) {
+      console.error("Unable to load stores:", err);
       setError(
-        error.response?.data?.message ||
-          "Unable to load stores."
+        err.response?.data?.message || "Unable to load stores. Please check your connection."
       );
     } finally {
       setLoading(false);
+      setRefreshing(false);
     }
-  };
-
-  useEffect(() => {
-    fetchStores();
   }, [filters.name, filters.address]);
 
-  const handleRatingChange = (storeId, value) => {
-    setRatingValues((previousValues) => ({
-      ...previousValues,
-      [storeId]: value,
+  useEffect(() => {
+    let isCancelled = false;
+
+    const timer = setTimeout(() => {
+      if (!isCancelled) {
+        fetchStores();
+      }
+    }, 200);
+
+    return () => {
+      isCancelled = true;
+      clearTimeout(timer);
+    };
+  }, [fetchStores]);
+
+  const handleFilterChange = (event) => {
+    const { name, value } = event.target;
+    setFilters((prev) => ({
+      ...prev,
+      [name]: value,
     }));
+  };
+
+  const handleClearFilter = (field) => {
+    setFilters((prev) => ({
+      ...prev,
+      [field]: "",
+    }));
+  };
+
+  const handleClearAllFilters = () => {
+    setFilters({
+      name: "",
+      address: "",
+    });
+  };
+
+  const handleStarClick = (storeId, score) => {
+    setRatingValues((prev) => ({
+      ...prev,
+      [storeId]: score,
+    }));
+
+    // Clear feedback if any
+    setStoreFeedback((prev) => ({
+      ...prev,
+      [storeId]: null,
+    }));
+  };
+
+  const handleStarMouseEnter = (storeId, score) => {
+    setHoveredRatings((prev) => ({
+      ...prev,
+      [storeId]: score,
+    }));
+  };
+
+  const handleStarMouseLeave = (storeId) => {
+    setHoveredRatings((prev) => {
+      const next = { ...prev };
+      delete next[storeId];
+      return next;
+    });
   };
 
   const handleSubmitRating = async (storeId) => {
     const selectedRating = ratingValues[storeId];
     const rating = Number(selectedRating);
 
-    console.log("1. Rating button clicked");
-    console.log("2. Store ID:", storeId);
-    console.log("3. Selected rating:", selectedRating);
-    console.log("4. Numeric rating:", rating);
-
     if (!selectedRating || rating < 1 || rating > 5) {
-      setError("Please select a rating between 1 and 5.");
+      setStoreFeedback((prev) => ({
+        ...prev,
+        [storeId]: {
+          type: "error",
+          message: "Please pick a rating between 1 and 5.",
+        },
+      }));
       return;
     }
 
+    setSubmittingStoreId(storeId);
+    setStoreFeedback((prev) => ({
+      ...prev,
+      [storeId]: null,
+    }));
+
     try {
-      setError("");
-
-      const store = stores.find(
-        (item) => item.id === storeId
-      );
-
-      console.log("5. Store:", store);
-      console.log(
-        "6. Existing user rating:",
-        store?.user_rating
-      );
-
+      const targetStore = stores.find((item) => item.id === storeId);
       const hasExistingRating =
-        store?.user_rating !== null &&
-        store?.user_rating !== undefined;
+        targetStore?.user_rating !== null && targetStore?.user_rating !== undefined;
 
       if (hasExistingRating) {
-        console.log("7. Sending PUT request...");
-
-        const response = await api.put(
-          `/stores/${storeId}/ratings`,
-          {
-            rating,
-          }
-        );
-
-        console.log("8. PUT response:", response.data);
+        await api.put(`/stores/${storeId}/ratings`, { rating });
+        setStoreFeedback((prev) => ({
+          ...prev,
+          [storeId]: {
+            type: "success",
+            message: "Your rating was updated successfully!",
+          },
+        }));
       } else {
-        console.log("7. Sending POST request...");
-
-        const response = await api.post(
-          `/stores/${storeId}/ratings`,
-          {
-            rating,
-          }
-        );
-
-        console.log("8. POST response:", response.data);
+        await api.post(`/stores/${storeId}/ratings`, { rating });
+        setStoreFeedback((prev) => ({
+          ...prev,
+          [storeId]: {
+            type: "success",
+            message: "Your rating was recorded successfully!",
+          },
+        }));
       }
 
-      console.log("9. Refreshing stores...");
-
+      // Refresh stores list to update community average
       await fetchStores();
 
-      console.log(
-        "10. Rating operation completed successfully."
-      );
-    } catch (error) {
-      console.error("11. Rating API error:", error);
-
-      setError(
-        error.response?.data?.message ||
-          "Unable to submit rating."
-      );
+      // Clear feedback after 4 seconds
+      setTimeout(() => {
+        setStoreFeedback((prev) => ({
+          ...prev,
+          [storeId]: null,
+        }));
+      }, 4000);
+    } catch (err) {
+      console.error("Rating submission error:", err);
+      setStoreFeedback((prev) => ({
+        ...prev,
+        [storeId]: {
+          type: "error",
+          message: err.response?.data?.message || "Failed to submit rating. Please try again.",
+        },
+      }));
+    } finally {
+      setSubmittingStoreId(null);
     }
   };
 
+  // Helper to render star display for community rating (0 to 5)
+  const renderAverageStars = (avgRating) => {
+    const num = Number(avgRating) || 0;
+    const rounded = Math.round(num * 10) / 10;
+    const fullStars = Math.floor(rounded);
+    const hasHalf = rounded - fullStars >= 0.5;
+
+    return (
+      <div className="store-score-stars" aria-label={`Rating: ${rounded} out of 5 stars`}>
+        {[1, 2, 3, 4, 5].map((index) => {
+          const isFilled = index <= fullStars;
+          const isHalf = index === fullStars + 1 && hasHalf;
+          return (
+            <StarIcon
+              key={index}
+              size={15}
+              filled={isFilled}
+              half={isHalf}
+              className="score-star-icon"
+            />
+          );
+        })}
+      </div>
+    );
+  };
+
   return (
-    <main className="dashboard-page">
-      <section className="dashboard-container">
-        <p className="eyebrow">STORE DIRECTORY</p>
+    <main className="stores-discovery-layout">
+      {/* Product-Oriented Discovery Header */}
+      <header className="stores-header-section">
+        <span className="stores-eyebrow">
+          <StoreIcon size={14} />
+          STORE DIRECTORY & COMMUNITY REVIEWS
+        </span>
 
-        <h1>
-          Find a <em>Store</em>
-        </h1>
+        <h1 className="stores-main-title">Find a place worth your time.</h1>
 
-        <p className="dashboard-subtitle">
-          Search stores, view ratings, and share your experience.
+        <p className="stores-subtitle">
+          Explore verified local stores, compare overall customer ratings, and submit your firsthand
+          feedback to support community trust.
         </p>
 
+        {/* Global Error Banner */}
         {error && (
-          <p className="form-error">{error}</p>
+          <div className="auth-alert alert-error" role="alert" style={{ marginBottom: "16px" }}>
+            <AlertCircleIcon size={18} />
+            <div style={{ flex: 1 }}>{error}</div>
+            <button
+              type="button"
+              className="meta-action-btn"
+              onClick={() => fetchStores(true)}
+              style={{ color: "var(--color-error)" }}
+            >
+              Retry
+            </button>
+          </div>
         )}
 
-        <div className="stores-filters">
-          <input
-            type="text"
-            name="name"
-            placeholder="Search by store name"
-            value={filters.name}
-            onChange={handleFilterChange}
-          />
+        {/* Context Meta Bar */}
+        <div className="stores-meta-bar">
+          <div className="stores-meta-left">
+            <span className="stores-count-badge">
+              <span className="stores-count-indicator" />
+              {loading
+                ? "Searching stores..."
+                : `${stores.length} ${stores.length === 1 ? "store" : "stores"} available`}
+            </span>
 
-          <input
-            type="text"
-            name="address"
-            placeholder="Search by address"
-            value={filters.address}
-            onChange={handleFilterChange}
-          />
+            {hasActiveFilters && (
+              <span className="stores-filter-tag">
+                Filtered by {filters.name.trim() ? `name: "${filters.name}"` : ""}
+                {filters.name.trim() && filters.address.trim() ? " & " : ""}
+                {filters.address.trim() ? `location: "${filters.address}"` : ""}
+              </span>
+            )}
+          </div>
+
+          <div className="stores-meta-right">
+            {hasActiveFilters && (
+              <button
+                type="button"
+                className="meta-action-btn"
+                onClick={handleClearAllFilters}
+                aria-label="Clear all active search filters"
+              >
+                <CloseIcon size={14} />
+                Clear Filters
+              </button>
+            )}
+
+            <button
+              type="button"
+              className="meta-action-btn"
+              onClick={() => fetchStores(true)}
+              disabled={loading || refreshing}
+              title="Refresh store listings"
+            >
+              {refreshing ? <SpinnerIcon size={14} /> : <RefreshIcon size={14} />}
+              {refreshing ? "Refreshing..." : "Refresh"}
+            </button>
+          </div>
         </div>
+      </header>
 
+      {/* Search & Discovery Panel */}
+      <section className="stores-search-container" aria-label="Store search filters">
+        <div className="search-inputs-grid">
+          {/* Store Name Filter */}
+          <div className="search-field-wrapper">
+            <span className="search-field-icon">
+              <SearchIcon size={18} />
+            </span>
+            <input
+              id="filter-store-name"
+              type="text"
+              name="name"
+              className="search-input-control"
+              placeholder="Search by store name..."
+              value={filters.name}
+              onChange={handleFilterChange}
+              autoComplete="off"
+            />
+            {filters.name && (
+              <button
+                type="button"
+                className="search-field-clear"
+                onClick={() => handleClearFilter("name")}
+                aria-label="Clear store name search"
+              >
+                <CloseIcon size={14} />
+              </button>
+            )}
+          </div>
+
+          {/* Address / Location Filter */}
+          <div className="search-field-wrapper">
+            <span className="search-field-icon">
+              <PinIcon size={18} />
+            </span>
+            <input
+              id="filter-store-address"
+              type="text"
+              name="address"
+              className="search-input-control"
+              placeholder="Filter by address or location..."
+              value={filters.address}
+              onChange={handleFilterChange}
+              autoComplete="off"
+            />
+            {filters.address && (
+              <button
+                type="button"
+                className="search-field-clear"
+                onClick={() => handleClearFilter("address")}
+                aria-label="Clear address search"
+              >
+                <CloseIcon size={14} />
+              </button>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* Store Listings Grid */}
+      <section aria-label="Available Stores">
+        {/* Loading Skeleton State */}
         {loading && (
-          <p className="dashboard-subtitle">
-            Loading stores...
-          </p>
+          <div className="stores-grid">
+            {[1, 2, 3, 4].map((id) => (
+              <div key={id} className="store-card-skeleton">
+                <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
+                  <div
+                    className="skeleton-shimmer"
+                    style={{ width: "44px", height: "44px", borderRadius: "8px" }}
+                  />
+                  <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "8px" }}>
+                    <div
+                      className="skeleton-shimmer"
+                      style={{ height: "18px", width: "65%", borderRadius: "4px" }}
+                    />
+                    <div
+                      className="skeleton-shimmer"
+                      style={{ height: "14px", width: "45%", borderRadius: "4px" }}
+                    />
+                  </div>
+                </div>
+                <div
+                  className="skeleton-shimmer"
+                  style={{ height: "40px", width: "100%", borderRadius: "6px" }}
+                />
+                <div
+                  className="skeleton-shimmer"
+                  style={{ height: "36px", width: "100%", borderRadius: "6px" }}
+                />
+              </div>
+            ))}
+          </div>
         )}
 
+        {/* Empty State */}
         {!loading && stores.length === 0 && (
-          <p className="dashboard-subtitle">
-            No stores found.
-          </p>
+          <div className="stores-empty-state">
+            <div className="stores-empty-icon-wrap">
+              <SearchIcon size={24} />
+            </div>
+            <h2 className="stores-empty-title">No matching stores found</h2>
+            <p className="stores-empty-desc">
+              {hasActiveFilters
+                ? "We could not find any stores matching your current search parameters. Try adjusting your search query or reset your filters."
+                : "There are currently no stores available in the directory."}
+            </p>
+            {hasActiveFilters && (
+              <button
+                type="button"
+                className="stores-empty-action"
+                onClick={handleClearAllFilters}
+              >
+                <CloseIcon size={14} />
+                Clear Search Filters
+              </button>
+            )}
+          </div>
         )}
 
+        {/* Stores Grid */}
         {!loading && stores.length > 0 && (
-          <div className="user-stores-grid">
+          <div className="stores-grid">
             {stores.map((store) => {
               const hasExistingRating =
-                store.user_rating !== null &&
-                store.user_rating !== undefined;
+                store.user_rating !== null && store.user_rating !== undefined;
+
+              const activeScore =
+                hoveredRatings[store.id] ||
+                ratingValues[store.id] ||
+                (hasExistingRating ? Number(store.user_rating) : 0);
+
+              const isSubmitting = submittingStoreId === store.id;
+              const feedback = storeFeedback[store.id];
+              const avgScore = Number(store.average_rating) || 0;
 
               return (
-                <article
-                  className="user-store-card"
-                  key={store.id}
-                >
-                  <div className="store-card-header">
-                    <div>
-                      <p className="store-card-label">
-                        STORE
-                      </p>
-
-                      <h2>{store.name}</h2>
+                <article className="store-card-modern" key={store.id}>
+                  {/* Top: Identity & Community Score */}
+                  <div className="store-card-top">
+                    <div className="store-identity-group">
+                      <div className="store-monogram" aria-hidden="true">
+                        {store.name ? store.name.charAt(0).toUpperCase() : "S"}
+                      </div>
+                      <div className="store-info-text">
+                        <h2 className="store-card-name">{store.name}</h2>
+                        <p className="store-card-address">
+                          <PinIcon size={15} />
+                          <span>{store.address}</span>
+                        </p>
+                      </div>
                     </div>
 
-                    <div className="store-rating">
-                      <strong>
-                        {Number(
-                          store.average_rating
-                        ).toFixed(1)}
-                      </strong>
-
-                      <span>/ 5</span>
+                    <div className="store-score-badge">
+                      <div className="store-score-top">
+                        <span className="store-score-number">
+                          {avgScore > 0 ? avgScore.toFixed(1) : "—"}
+                        </span>
+                        <span className="store-score-scale">/ 5</span>
+                      </div>
+                      {renderAverageStars(avgScore)}
+                      <span className="store-score-label">Community Score</span>
                     </div>
                   </div>
 
-                  <p className="store-address">
-                    {store.address}
-                  </p>
-
-                  <div className="user-rating-section">
-                    <div>
-                      <span className="rating-label">
-                        Your rating
-                      </span>
-
-                      <strong>
-                        {hasExistingRating
-                          ? `${store.user_rating} / 5`
-                          : "Not rated yet"}
-                      </strong>
+                  {/* User Personal Rating Status */}
+                  <div className="store-user-status-section">
+                    <div
+                      className={`store-status-pill ${
+                        hasExistingRating ? "rated" : "unrated"
+                      }`}
+                    >
+                      {hasExistingRating ? (
+                        <>
+                          <CheckCircleIcon size={14} />
+                          <span>Your Rating: {store.user_rating} / 5</span>
+                        </>
+                      ) : (
+                        <>
+                          <StarIcon size={14} />
+                          <span>Not rated by you yet</span>
+                        </>
+                      )}
                     </div>
 
-                    <div className="rating-controls">
-                      <select
-                        value={
-                          ratingValues[store.id] || ""
-                        }
-                        onChange={(event) =>
-                          handleRatingChange(
-                            store.id,
-                            event.target.value
-                          )
-                        }
-                      >
-                        <option value="">
-                          Select rating
-                        </option>
+                    <span className="store-status-hint">
+                      {hasExistingRating
+                        ? "Update rating below"
+                        : "Rate this store"}
+                    </span>
+                  </div>
 
-                        <option value="1">
-                          1 / 5
-                        </option>
+                  {/* Interactive Star Rating Selector & Actions */}
+                  <div className="store-interactive-rating-area">
+                    <div className="rating-selection-header">
+                      <span className="rating-prompt-label">
+                        {hasExistingRating ? "Modify Your Rating" : "Select Your Rating"}
+                      </span>
+                      <span className="rating-verbal-hint">
+                        {activeScore > 0
+                          ? RATING_DESCRIPTIONS[activeScore]
+                          : "Click a star to rate"}
+                      </span>
+                    </div>
 
-                        <option value="2">
-                          2 / 5
-                        </option>
+                    {/* Star Buttons (1 to 5) */}
+                    <div
+                      className="star-rating-selector"
+                      role="radiogroup"
+                      aria-label={`Select rating for ${store.name}`}
+                    >
+                      {[1, 2, 3, 4, 5].map((starValue) => {
+                        const isSelected = ratingValues[store.id] === starValue;
+                        const isHovered = hoveredRatings[store.id] >= starValue;
+                        const isFilled =
+                          (hoveredRatings[store.id] ? hoveredRatings[store.id] >= starValue : ratingValues[store.id] >= starValue) ||
+                          (!ratingValues[store.id] && hasExistingRating && Number(store.user_rating) >= starValue);
 
-                        <option value="3">
-                          3 / 5
-                        </option>
+                        return (
+                          <button
+                            key={starValue}
+                            type="button"
+                            className={`star-btn ${isSelected ? "active" : ""} ${
+                              isHovered ? "hovered" : ""
+                            }`}
+                            onClick={() => handleStarClick(store.id, starValue)}
+                            onMouseEnter={() => handleStarMouseEnter(store.id, starValue)}
+                            onMouseLeave={() => handleStarMouseLeave(store.id)}
+                            aria-label={`${starValue} out of 5 stars`}
+                            aria-pressed={isSelected}
+                          >
+                            <StarIcon
+                              size={18}
+                              filled={isFilled}
+                              className="interactive-star-icon"
+                            />
+                          </button>
+                        );
+                      })}
+                    </div>
 
-                        <option value="4">
-                          4 / 5
-                        </option>
-
-                        <option value="5">
-                          5 / 5
-                        </option>
-                      </select>
-
+                    {/* Bottom Action Row: Submit/Update Button & Inline Feedback */}
+                    <div className="store-action-row">
                       <button
                         type="button"
-                        onClick={() =>
-                          handleSubmitRating(store.id)
-                        }
+                        className={`submit-rating-btn ${
+                          hasExistingRating ? "btn-update" : ""
+                        }`}
+                        onClick={() => handleSubmitRating(store.id)}
+                        disabled={isSubmitting || !ratingValues[store.id]}
                       >
-                        {hasExistingRating
-                          ? "Update Rating"
-                          : "Submit Rating"}
+                        {isSubmitting ? (
+                          <>
+                            <SpinnerIcon size={14} />
+                            <span>Saving...</span>
+                          </>
+                        ) : (
+                          <>
+                            <StarIcon size={14} filled={Boolean(ratingValues[store.id])} />
+                            <span>{hasExistingRating ? "Update Rating" : "Submit Rating"}</span>
+                          </>
+                        )}
                       </button>
+
+                      {feedback && (
+                        <div className={`store-inline-feedback ${feedback.type}`}>
+                          {feedback.type === "success" ? (
+                            <CheckCircleIcon size={14} />
+                          ) : (
+                            <AlertCircleIcon size={14} />
+                          )}
+                          <span>{feedback.message}</span>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </article>
