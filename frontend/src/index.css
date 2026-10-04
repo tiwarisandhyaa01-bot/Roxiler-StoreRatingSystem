@@ -170,6 +170,48 @@ h1 em {
   opacity: 0.6;
 }
 
+.signup-card {
+  max-width: 500px;
+}
+
+.login-form textarea {
+  width: 100%;
+  padding: 13px 14px;
+  border: 1px solid #d9ddda;
+  border-radius: 10px;
+  outline: none;
+  background: #ffffff;
+  color: #1f2933;
+  font-family: inherit;
+  font-size: 14px;
+  resize: vertical;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.login-form textarea:focus {
+  border-color: #8b938d;
+  box-shadow: 0 0 0 3px rgba(139, 147, 141, 0.12);
+}
+
+.auth-footer-text {
+  margin: 18px 0 0;
+  text-align: center;
+  font-size: 14px;
+  color: #69727d;
+}
+
+.auth-link {
+  color: #1f2933;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.15s ease;
+}
+
+.auth-link:hover {
+  color: #000000;
+}
+
 .form-error {
   margin: 8px 0 0;
   color: #b42318;

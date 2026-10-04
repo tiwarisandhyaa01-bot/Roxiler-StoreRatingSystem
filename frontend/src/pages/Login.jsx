@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 function Login() {
   const { login, loading } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [formData, setFormData] = useState({
     email: "",
@@ -12,6 +13,7 @@ function Login() {
   });
 
   const [error, setError] = useState("");
+  const successMessage = location.state?.message;
 
   const handleChange = (event) => {
     setFormData({
@@ -78,11 +80,19 @@ function Login() {
             required
           />
 
+          {successMessage && <p className="form-success">{successMessage}</p>}
           {error && <p className="form-error">{error}</p>}
 
           <button type="submit" disabled={loading}>
             {loading ? "Signing in..." : "Sign In"}
           </button>
+
+          <p className="auth-footer-text">
+            Don't have an account?{" "}
+            <Link to="/signup" className="auth-link">
+              Sign up
+            </Link>
+          </p>
         </form>
       </section>
     </main>

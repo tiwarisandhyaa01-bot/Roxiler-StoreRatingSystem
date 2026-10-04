@@ -3,6 +3,7 @@ import { AuthProvider } from "./context/AuthContext";
 import AuthenticatedLayout from "./components/AuthenticatedLayout";
 import RoleRoute from "./components/RoleRoute";
 import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminUsers from "./pages/AdminUsers";
 import AdminStores from "./pages/AdminStores";
@@ -20,6 +21,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
           <Route element={<AuthenticatedLayout />}>
             {/* ADMIN ROUTES */}
             <Route element={<RoleRoute allowedRoles={["ADMIN"]} />}>
