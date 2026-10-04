@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import AuthenticatedLayout from "./components/AuthenticatedLayout";
+import RoleRoute from "./components/RoleRoute";
 import Login from "./pages/Login";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminUsers from "./pages/AdminUsers";
@@ -20,13 +21,26 @@ function App() {
           <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="/login" element={<Login />} />
           <Route element={<AuthenticatedLayout />}>
-            <Route path="/admin" element={<AdminDashboard />} />
-            <Route path="/admin/users" element={<AdminUsers />} />
-            <Route path="/admin/stores" element={<AdminStores />} />
-            <Route path="/admin/users/add" element={<AddUser />} />
-            <Route path="/admin/stores/add" element={<AddStore />} />
-            <Route path="/stores" element={<Stores />} />
-            <Route path="/owner" element={<OwnerDashboard />} />
+            {/* ADMIN ROUTES */}
+            <Route element={<RoleRoute allowedRoles={["ADMIN"]} />}>
+              <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="/admin/users" element={<AdminUsers />} />
+              <Route path="/admin/stores" element={<AdminStores />} />
+              <Route path="/admin/users/add" element={<AddUser />} />
+              <Route path="/admin/stores/add" element={<AddStore />} />
+            </Route>
+
+            {/* USER ROUTES */}
+            <Route element={<RoleRoute allowedRoles={["USER"]} />}>
+              <Route path="/stores" element={<Stores />} />
+            </Route>
+
+            {/* STORE OWNER ROUTES */}
+            <Route element={<RoleRoute allowedRoles={["STORE_OWNER"]} />}>
+              <Route path="/owner" element={<OwnerDashboard />} />
+            </Route>
+
+            {/* ACCESSIBLE TO ALL AUTHENTICATED ROLES */}
             <Route path="/change-password" element={<ChangePassword />} />
           </Route>
         </Routes>
