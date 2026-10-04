@@ -623,3 +623,144 @@ h1 em {
     padding: 24px 20px;
   }
 }
+
+/* Authenticated Navigation Bar */
+.app-navbar {
+  background: #ffffff;
+  border-bottom: 1px solid #e7e9e6;
+  box-shadow: 0 2px 10px rgba(31, 41, 51, 0.03);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.navbar-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 32px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.navbar-brand-section {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: #1f2933;
+}
+
+.brand-badge {
+  background: #1f2933;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+.brand-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #303943;
+}
+
+.navbar-links {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.nav-link {
+  font-size: 14px;
+  font-weight: 500;
+  color: #69727d;
+  text-decoration: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+
+.nav-link:hover {
+  color: #1f2933;
+  background: #f6f7f5;
+}
+
+.nav-link.active {
+  color: #1f2933;
+  background: #eef0ed;
+  font-weight: 600;
+}
+
+.navbar-user-section {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.user-profile {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.user-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1f2933;
+}
+
+.user-role-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  background: #eef0ed;
+  color: #4b5563;
+  letter-spacing: 0.03em;
+}
+
+.logout-button {
+  padding: 7px 15px;
+  font-size: 13px;
+  font-weight: 600;
+  border: 1px solid #d9ddda;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #4b5563;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.logout-button:hover {
+  background: #fef3f2;
+  border-color: #fecdca;
+  color: #b42318;
+}
+
+@media (max-width: 860px) {
+  .navbar-container {
+    height: auto;
+    padding: 14px 20px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .navbar-links {
+    order: 3;
+    width: 100%;
+    overflow-x: auto;
+    padding-top: 10px;
+    border-top: 1px solid #f0f2ef;
+  }
+}
