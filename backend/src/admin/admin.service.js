@@ -118,7 +118,7 @@ const getUserById = async (userId) => {
        u.role,
        s.id AS store_id,
        s.name AS store_name,
-       COALESCE(AVG(r.rating), 0) AS average_rating
+       COALESCE(AVG(r.rating), 0) AS rating
      FROM users u
      LEFT JOIN stores s ON s.owner_id = u.id
      LEFT JOIN ratings r ON r.store_id = s.id
