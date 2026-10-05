@@ -519,25 +519,44 @@ The project incorporates established security and data-integrity practices:
 
 ## Environment Variables
 
-The backend requires the following environment variables, configured in `backend/.env`. A template is provided in `backend/.env.example`:
+### Backend Configuration (`backend/.env`)
+A template is provided in `backend/.env.example`:
 
 ```env
 # Server Configuration
 PORT=5000
+NODE_ENV=development
 
-# PostgreSQL Database Configuration
+# Frontend URL for CORS (e.g., https://<your-vercel-app>.vercel.app in production)
+FRONTEND_URL=http://localhost:5173
+
+# Database Connection (Standard Local PostgreSQL)
 DB_HOST=localhost
 DB_PORT=5432
 DB_NAME=roxiler_store_rating
 DB_USER=postgres
 DB_PASSWORD=your_postgresql_password
+DB_SSL=false
+
+# Alternative: Direct PostgreSQL / Neon Connection String (used in production on Render)
+# DATABASE_URL=postgresql://username:password@ep-example.region.aws.neon.tech/roxiler_store_rating?sslmode=require
 
 # JWT Authentication Secret
 JWT_SECRET=your_secure_jwt_secret_key
 ```
 
+### Frontend Configuration (`frontend/.env`)
+A template is provided in `frontend/.env.example`:
+
+```env
+# Backend API Base URL
+# For local development: http://localhost:5000/api
+# For production (Vercel): https://<your-render-backend-url>/api
+VITE_API_BASE_URL=http://localhost:5000/api
+```
+
 > [!WARNING]
-> **Important Note:** The `.env` file contains sensitive local configuration and credentials and is ignored by Git (`.gitignore`). **Never commit real credentials to version control.**
+> **Important Note:** Local `.env` files contain sensitive local configuration and credentials and are ignored by Git (`.gitignore`). **Never commit real credentials to version control.**
 
 ---
 
