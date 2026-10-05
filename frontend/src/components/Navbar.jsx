@@ -1,5 +1,6 @@
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { StoreIcon, LogoutIcon } from "../components/Icons";
 
 function Navbar() {
   const { user, logout } = useAuth();
@@ -28,13 +29,16 @@ function Navbar() {
     <header className="app-navbar">
       <div className="navbar-container">
         <div className="navbar-brand-section">
-          <Link to={getHomePath()} className="navbar-brand">
-            <span className="brand-badge">ROXILER</span>
+          <Link to={getHomePath()} className="navbar-brand" aria-label="Roxiler Store Ratings Home">
+            <span className="brand-badge">
+              <StoreIcon size={14} style={{ marginRight: "3px" }} />
+              ROXILER
+            </span>
             <span className="brand-title">Store Ratings</span>
           </Link>
         </div>
 
-        <nav className="navbar-links">
+        <nav className="navbar-links" aria-label="Main Navigation">
           {user?.role === "ADMIN" && (
             <>
               <NavLink
@@ -83,7 +87,7 @@ function Navbar() {
                 isActive ? "nav-link active" : "nav-link"
               }
             >
-              Owner Dashboard
+              Dashboard
             </NavLink>
           )}
 
@@ -109,8 +113,10 @@ function Navbar() {
             type="button"
             className="logout-button"
             onClick={handleLogout}
+            aria-label="Log out of application"
           >
-            Logout
+            <LogoutIcon size={14} />
+            <span>Logout</span>
           </button>
         </div>
       </div>
