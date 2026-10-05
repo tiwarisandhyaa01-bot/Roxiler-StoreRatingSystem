@@ -145,7 +145,7 @@ function OwnerDashboard() {
       {/* No Store Assigned Banner (404) */}
       {noStoreAssigned && !loading && (
         <div className="owner-no-store-panel">
-          <div className="owner-empty-icon-wrap" style={{ background: "#f1f5f9", color: "#475569", borderColor: "#cbd5e1" }}>
+          <div className="owner-empty-icon-wrap" style={{ background: "var(--color-surface-subtle)", color: "var(--color-text-secondary)", borderColor: "var(--color-border)" }}>
             <StoreIcon size={24} />
           </div>
           <h2 className="owner-empty-title">No Store Assigned Yet</h2>
@@ -232,7 +232,7 @@ function OwnerDashboard() {
                 <div>
                   <div className="owner-metric-header">
                     <span className="owner-metric-title">Average Rating</span>
-                    <StarIcon size={16} filled style={{ color: "#f59e0b" }} />
+                    <StarIcon size={16} filled style={{ color: "var(--color-rating)" }} />
                   </div>
 
                   <div className="owner-metric-score-wrap">
@@ -323,7 +323,7 @@ function OwnerDashboard() {
                             <div className="table-user-cell">
                               <div
                                 className="table-user-monogram"
-                                style={{ background: "#ecfdf5", color: "#065f46", borderColor: "#a7f3d0" }}
+                                style={{ background: "var(--role-user-bg)", color: "var(--role-user-color)", borderColor: "var(--role-user-border)" }}
                                 aria-hidden="true"
                               >
                                 {rating.user_name ? rating.user_name.charAt(0).toUpperCase() : "U"}
@@ -340,9 +340,9 @@ function OwnerDashboard() {
                                 gap: "5px",
                                 fontSize: "13px",
                                 fontWeight: "700",
-                                color: "#b45309",
-                                background: "#fffbeb",
-                                border: "1px solid #fde68a",
+                                color: "var(--color-rating)",
+                                background: "var(--color-rating-subtle)",
+                                border: "1px solid var(--color-rating-border)",
                                 padding: "3px 9px",
                                 borderRadius: "4px",
                               }}

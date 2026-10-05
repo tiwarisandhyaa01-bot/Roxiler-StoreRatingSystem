@@ -246,9 +246,9 @@ function AddStore() {
                     padding: "10px 14px",
                     borderRadius: "6px",
                     fontSize: "13px",
-                    background: "#fffbeb",
-                    border: "1px solid #fde68a",
-                    color: "#92400e",
+                    background: "var(--color-warning-bg)",
+                    border: "1px solid var(--color-warning-border)",
+                    color: "var(--color-warning)",
                   }}
                 >
                   <AlertCircleIcon size={16} />

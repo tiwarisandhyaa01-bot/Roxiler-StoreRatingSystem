@@ -358,9 +358,9 @@ function AdminStores() {
                               gap: "4px",
                               fontSize: "12.5px",
                               fontWeight: "700",
-                              color: ratingNum > 0 ? "#b45309" : "var(--color-text-muted)",
-                              background: ratingNum > 0 ? "#fffbeb" : "var(--color-surface-subtle)",
-                              border: `1px solid ${ratingNum > 0 ? "#fde68a" : "var(--color-border)"}`,
+                              color: ratingNum > 0 ? "var(--color-rating)" : "var(--color-text-muted)",
+                              background: ratingNum > 0 ? "var(--color-rating-subtle)" : "var(--color-surface-subtle)",
+                              border: `1px solid ${ratingNum > 0 ? "var(--color-rating-border)" : "var(--color-border)"}`,
                               padding: "2px 8px",
                               borderRadius: "4px",
                             }}
@@ -436,7 +436,7 @@ function AdminStores() {
               <div className="detail-row">
                 <span className="detail-key">Community Rating</span>
                 <span className="detail-val" style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
-                  <StarIcon size={14} filled style={{ color: "#f59e0b" }} />
+                  <StarIcon size={14} filled style={{ color: "var(--color-rating)" }} />
                   <span>
                     {Number(selectedStore.average_rating) > 0
                       ? `${Number(selectedStore.average_rating).toFixed(1)} / 5.0 (${selectedStore.total_ratings ?? 0} reviews)`

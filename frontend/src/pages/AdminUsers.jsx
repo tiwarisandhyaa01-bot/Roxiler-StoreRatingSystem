@@ -453,7 +453,7 @@ function AdminUsers() {
                   <div className="detail-row">
                     <span className="detail-key">Overall Rating</span>
                     <span className="detail-val" style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
-                      <StarIcon size={14} filled style={{ color: "#f59e0b" }} />
+                      <StarIcon size={14} filled style={{ color: "var(--color-rating)" }} />
                       <span>
                         {Number(selectedUser.rating) > 0
                           ? `${Number(selectedUser.rating).toFixed(1)} / 5.0`

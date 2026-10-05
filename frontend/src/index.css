@@ -4,42 +4,72 @@
    ========================================================================== */
 
 :root {
-  /* Brand & Interactive Colors */
-  --color-primary: #2563eb;
-  --color-primary-hover: #1d4ed8;
-  --color-primary-active: #1e40af;
-  --color-primary-subtle: #eff6ff;
-  --color-primary-border: #bfdbfe;
+  /* ==========================================================================
+     NEUTRAL ELEGANCE DESIGN TOKENS
+     ========================================================================== */
 
-  /* Neutrals & Surfaces */
-  --color-bg-app: #f8fafc;
-  --color-surface: #ffffff;
-  --color-surface-subtle: #f1f5f9;
-  --color-surface-muted: #e2e8f0;
+  /* 1. Primary Foundation - Warm Bone / Floral White Canvas */
+  --color-bg-app: #F7F4EC;
+  --color-surface: #FCFBF7;
+  --color-surface-subtle: #F1ECE1;
+  --color-surface-muted: #E8E2D5;
 
-  /* Borders & Dividers */
-  --color-border: #e2e8f0;
-  --color-border-hover: #cbd5e1;
-  --color-border-focus: #2563eb;
+  /* 2. Primary Brand Accent - Muted Olive Drab */
+  --color-primary: #66704A;
+  --color-primary-hover: #555E3D;
+  --color-primary-active: #474E32;
+  --color-primary-subtle: #EFF2E6;
+  --color-primary-border: #CBD4BA;
 
-  /* Typography */
-  --color-text-primary: #0f172a;
-  --color-text-secondary: #475569;
-  --color-text-muted: #94a3b8;
-  --color-text-inverted: #ffffff;
+  /* 3. Secondary Accent - Plum Wine */
+  --color-secondary: #633B4D;
+  --color-secondary-hover: #522F3F;
+  --color-secondary-subtle: #F7EFF3;
+  --color-secondary-border: #E3D0D9;
 
-  /* Semantic Feedback */
-  --color-success: #16a34a;
-  --color-success-bg: #f0fdf4;
-  --color-success-border: #bbf7d0;
+  /* 4. Rating Accent - Golden Sandalwood */
+  --color-rating: #B28A52;
+  --color-rating-hover: #9E7740;
+  --color-rating-subtle: #FAF4EB;
+  --color-rating-border: #E8D7BE;
+  --color-rating-empty: #C2B8A8;
 
-  --color-error: #dc2626;
-  --color-error-bg: #fef2f2;
-  --color-error-border: #fecaca;
+  /* 5. Borders & Dividers - Soft Warm Gray / Taupe */
+  --color-border: #D5CEC3;
+  --color-border-hover: #C2B9AC;
+  --color-border-focus: #66704A;
 
-  --color-warning: #d97706;
-  --color-warning-bg: #fffbeb;
-  --color-warning-border: #fde68a;
+  /* 6. Typography - Deep Espresso & Muted Taupe */
+  --color-text-primary: #302C28;
+  --color-text-secondary: #756D64;
+  --color-text-muted: #9E968B;
+  --color-text-inverted: #FCFBF7;
+
+  /* 7. Semantic Feedback (Natural Earthy Family) */
+  --color-success: #526638;
+  --color-success-bg: #F0F4E8;
+  --color-success-border: #C8D6B6;
+
+  --color-error: #8C3A47;
+  --color-error-bg: #FDF2F4;
+  --color-error-border: #F1CED3;
+
+  --color-warning: #9E743A;
+  --color-warning-bg: #FAF3E8;
+  --color-warning-border: #EAD8BD;
+
+  /* Role Badges */
+  --role-admin-color: #633B4D;
+  --role-admin-bg: #F7EFF3;
+  --role-admin-border: #E3D0D9;
+
+  --role-owner-color: #8D652D;
+  --role-owner-bg: #FAF4EB;
+  --role-owner-border: #E8D7BE;
+
+  --role-user-color: #555E3D;
+  --role-user-bg: #EFF2E6;
+  --role-user-border: #CBD4BA;
 
   /* Typography */
   --font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -53,10 +83,10 @@
   --radius-lg: 12px;
   --radius-pill: 9999px;
 
-  /* Shadows */
-  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.08), 0 1px 2px -1px rgba(0, 0, 0, 0.04);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  /* Shadows - Warm and restrained */
+  --shadow-xs: 0 1px 2px 0 rgba(48, 44, 40, 0.04);
+  --shadow-sm: 0 1px 3px 0 rgba(48, 44, 40, 0.06), 0 1px 2px -1px rgba(48, 44, 40, 0.03);
+  --shadow-md: 0 4px 6px -1px rgba(48, 44, 40, 0.06), 0 2px 4px -2px rgba(48, 44, 40, 0.04);
 }
 
 /* Base Reset */
@@ -150,7 +180,7 @@ a {
   background-color: var(--color-primary);
   color: var(--color-text-inverted);
   border-radius: var(--radius-md);
-  box-shadow: 0 1px 3px rgba(37, 99, 235, 0.3);
+  box-shadow: 0 1px 3px rgba(102, 112, 74, 0.25);
 }
 
 .auth-brand-name {
@@ -331,7 +361,7 @@ a {
 .form-input:focus,
 .form-textarea:focus {
   border-color: var(--color-border-focus);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+  box-shadow: 0 0 0 3px rgba(102, 112, 74, 0.16);
 }
 
 /* Compact Live Password Checklist */
@@ -592,7 +622,7 @@ h1 em {
 
 .users-table tbody tr:hover,
 .stores-table tbody tr:hover {
-  background: #f8fafc;
+  background: var(--color-surface-subtle);
 }
 
 /* Filters */
@@ -630,7 +660,7 @@ h1 em {
 .stores-filters select:focus {
   border-color: var(--color-border-focus);
   background: var(--color-surface);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+  box-shadow: 0 0 0 3px rgba(102, 112, 74, 0.16);
 }
 
 /* User Stores Grid */
@@ -678,10 +708,10 @@ h1 em {
   align-items: baseline;
   gap: 4px;
   padding: 4px 8px;
-  background: #fffbeb;
-  border: 1px solid #fde68a;
+  background: var(--color-rating-subtle);
+  border: 1px solid var(--color-rating-border);
   border-radius: var(--radius-sm);
-  color: #b45309;
+  color: var(--color-rating);
 }
 
 .store-rating strong {
@@ -691,7 +721,7 @@ h1 em {
 
 .store-rating span {
   font-size: 11px;
-  color: #92400e;
+  color: var(--color-rating-hover);
 }
 
 .store-address {
@@ -940,7 +970,7 @@ h1 em {
 .admin-form textarea:focus,
 .change-password-form input:focus {
   border-color: var(--color-border-focus);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+  box-shadow: 0 0 0 3px rgba(102, 112, 74, 0.16);
 }
 
 .form-actions {
@@ -1079,6 +1109,25 @@ h1 em {
   background: var(--color-surface-subtle);
   color: var(--color-text-secondary);
   border: 1px solid var(--color-border);
+}
+
+.user-role-badge.role-admin {
+  background: var(--role-admin-bg);
+  color: var(--role-admin-color);
+  border-color: var(--role-admin-border);
+}
+
+.user-role-badge.role-owner,
+.user-role-badge.role-store-owner {
+  background: var(--role-owner-bg);
+  color: var(--role-owner-color);
+  border-color: var(--role-owner-border);
+}
+
+.user-role-badge.role-user {
+  background: var(--role-user-bg);
+  color: var(--role-user-color);
+  border-color: var(--role-user-border);
 }
 
 .logout-button {
@@ -1293,7 +1342,7 @@ h1 em {
   outline: none;
   background: var(--color-surface);
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+  box-shadow: 0 0 0 3px rgba(102, 112, 74, 0.16);
 }
 
 .search-input-control::placeholder {
@@ -1444,7 +1493,7 @@ h1 em {
   align-items: center;
   gap: 2px;
   margin-top: 4px;
-  color: #f59e0b;
+  color: var(--color-rating);
 }
 
 .store-score-label {
@@ -1469,7 +1518,7 @@ h1 em {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #fafbfc;
+  background: var(--color-surface-subtle);
   border-bottom: 1px solid var(--color-border);
 }
 
@@ -1484,9 +1533,9 @@ h1 em {
 }
 
 .store-status-pill.rated {
-  background: #ecfdf5;
-  color: #065f46;
-  border: 1px solid #a7f3d0;
+  background: var(--color-success-bg);
+  color: var(--color-success);
+  border: 1px solid var(--color-success-border);
 }
 
 .store-status-pill.unrated {
@@ -1527,7 +1576,7 @@ h1 em {
 .rating-verbal-hint {
   font-size: 12px;
   font-weight: 600;
-  color: #d97706;
+  color: var(--color-rating);
 }
 
 .star-rating-selector {
@@ -1551,16 +1600,16 @@ h1 em {
 
 .star-btn:hover,
 .star-btn.hovered {
-  border-color: #f59e0b;
-  color: #f59e0b;
-  background: #fffbeb;
+  border-color: var(--color-rating);
+  color: var(--color-rating);
+  background: var(--color-rating-subtle);
   transform: translateY(-1px);
 }
 
 .star-btn.active {
-  border-color: #f59e0b;
-  background: #fef3c7;
-  color: #d97706;
+  border-color: var(--color-rating);
+  background: var(--color-rating-border);
+  color: var(--color-rating-hover);
 }
 
 .star-btn:focus-visible {
@@ -1694,7 +1743,7 @@ h1 em {
 }
 
 .stores-empty-action:hover {
-  background: #dbeafe;
+  background: var(--color-surface-muted);
 }
 
 /* Skeleton Loading Cards */
@@ -1711,9 +1760,9 @@ h1 em {
 .skeleton-shimmer {
   background: linear-gradient(
     90deg,
-    #f1f5f9 25%,
-    #e2e8f0 50%,
-    #f1f5f9 75%
+    #F1ECE1 25%,
+    #E5DFD2 50%,
+    #F1ECE1 75%
   );
   background-size: 200% 100%;
   animation: skeletonPulse 1.5s infinite;
@@ -2110,7 +2159,7 @@ h1 em {
   outline: none;
   background: var(--color-surface);
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+  box-shadow: 0 0 0 3px rgba(102, 112, 74, 0.16);
 }
 
 .filter-input::placeholder {
@@ -2194,7 +2243,7 @@ h1 em {
 }
 
 .admin-table tbody tr:hover {
-  background: #f8fafc;
+  background: var(--color-surface-subtle);
 }
 
 /* User Identity Cell */
@@ -2237,21 +2286,21 @@ h1 em {
 }
 
 .role-badge.role-admin {
-  background: #f5f3ff;
-  color: #6d28d9;
-  border: 1px solid #ddd6fe;
+  background: var(--role-admin-bg);
+  color: var(--role-admin-color);
+  border: 1px solid var(--role-admin-border);
 }
 
 .role-badge.role-owner {
-  background: #fffbeb;
-  color: #b45309;
-  border: 1px solid #fde68a;
+  background: var(--role-owner-bg);
+  color: var(--role-owner-color);
+  border: 1px solid var(--role-owner-border);
 }
 
 .role-badge.role-user {
-  background: #f1f5f9;
-  color: #334155;
-  border: 1px solid #cbd5e1;
+  background: var(--role-user-bg);
+  color: var(--role-user-color);
+  border: 1px solid var(--role-user-border);
 }
 
 /* Table Actions */
@@ -2270,14 +2319,14 @@ h1 em {
 }
 
 .table-action-btn:hover {
-  background: #dbeafe;
+  background: var(--color-surface-muted);
 }
 
 /* Modal / Slide-Out Details Drawer */
 .admin-modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(15, 23, 42, 0.45);
+  background: rgba(48, 44, 40, 0.45);
   backdrop-filter: blur(2px);
   display: flex;
   align-items: center;
@@ -2434,7 +2483,7 @@ h1 em {
   outline: none;
   background: var(--color-surface);
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+  box-shadow: 0 0 0 3px rgba(102, 112, 74, 0.16);
 }
 
 .admin-textarea-control {
@@ -2453,7 +2502,7 @@ h1 em {
   outline: none;
   background: var(--color-surface);
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+  box-shadow: 0 0 0 3px rgba(102, 112, 74, 0.16);
 }
 
 .admin-form-actions {
@@ -2534,9 +2583,9 @@ h1 em {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #b45309;
-  background: #fffbeb;
-  border: 1px solid #fde68a;
+  color: var(--color-rating);
+  background: var(--color-rating-subtle);
+  border: 1px solid var(--color-rating-border);
   padding: 4px 10px;
   border-radius: var(--radius-pill);
   margin-bottom: 12px;
@@ -2585,9 +2634,9 @@ h1 em {
   width: 52px;
   height: 52px;
   border-radius: var(--radius-md);
-  background: #fffbeb;
-  border: 1px solid #fde68a;
-  color: #b45309;
+  background: var(--color-rating-subtle);
+  border: 1px solid var(--color-rating-border);
+  color: var(--color-rating);
   font-size: 22px;
   font-weight: 800;
   display: flex;
@@ -2699,7 +2748,7 @@ h1 em {
   display: flex;
   align-items: center;
   gap: 3px;
-  color: #f59e0b;
+  color: var(--color-rating);
   margin-bottom: 8px;
 }
 
@@ -2754,9 +2803,9 @@ h1 em {
   width: 52px;
   height: 52px;
   border-radius: 50%;
-  background: #fffbeb;
-  border: 1px solid #fde68a;
-  color: #d97706;
+  background: var(--color-rating-subtle);
+  border: 1px solid var(--color-rating-border);
+  color: var(--color-rating);
   display: flex;
   align-items: center;
   justify-content: center;

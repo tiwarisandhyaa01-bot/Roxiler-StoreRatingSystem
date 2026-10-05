@@ -105,7 +105,9 @@ function Navbar() {
           {user && (
             <div className="user-profile">
               <span className="user-name">{user.name}</span>
-              <span className="user-role-badge">{formatRole(user.role)}</span>
+              <span className={`user-role-badge role-${user.role?.toLowerCase().replace(/_/g, '-')}`}>
+                {formatRole(user.role)}
+              </span>
             </div>
           )}
 

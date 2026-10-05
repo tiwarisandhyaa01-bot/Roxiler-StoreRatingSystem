@@ -168,7 +168,7 @@ function AdminDashboard() {
                 <span className="admin-metric-tag">Community Reviews</span>
                 <div
                   className="admin-metric-icon-wrap"
-                  style={{ background: "#fef3c7", color: "#d97706" }}
+                  style={{ background: "var(--color-rating-subtle)", color: "var(--color-rating)" }}
                 >
                   <StarIcon size={20} filled />
                 </div>
