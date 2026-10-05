@@ -212,17 +212,17 @@ const getStores = async ({
 
   if (name.trim()) {
     values.push(`%${name.trim()}%`);
-    conditions.push(`s.name ILIKE ${values.length}`);
+    conditions.push(`s.name ILIKE $${values.length}`);
   }
 
   if (email.trim()) {
     values.push(`%${email.trim()}%`);
-    conditions.push(`s.email ILIKE ${values.length}`);
+    conditions.push(`s.email ILIKE $${values.length}`);
   }
 
   if (address.trim()) {
     values.push(`%${address.trim()}%`);
-    conditions.push(`s.address ILIKE ${values.length}`);
+    conditions.push(`s.address ILIKE $${values.length}`);
   }
 
   const whereClause =

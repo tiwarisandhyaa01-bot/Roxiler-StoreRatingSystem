@@ -60,6 +60,19 @@ const changePassword = async (req, res) => {
       });
     }
 
+    if (
+      newPassword.length < 8 ||
+      newPassword.length > 16 ||
+      !/[A-Z]/.test(newPassword) ||
+      !/[^A-Za-z0-9]/.test(newPassword)
+    ) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "New password must be 8-16 characters and contain at least one uppercase letter and one special character.",
+      });
+    }
+
     const result = await authService.changePassword(
       req.user.userId,
       currentPassword,
